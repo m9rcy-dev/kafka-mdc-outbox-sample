@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: kafka-mdc-outbox-sample
+  datasource:
+    url: jdbc:postgresql://localhost:5432/outboxdb
+    username: outboxuser
+    password: outboxpass
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: kafka-mdc-outbox-sample
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      properties:
+        enable.idempotence: true
+        acks: all
+        max.in.flight.requests.per.connection: 1
+
+app:
+  kafka:
+    input-topic: input_topic
+    processed-topic: processed_topic
+    dlq-suffix: .DLQ
+  outbox:
+    enabled: true
+    fixed-delay-ms: 1000
+    batch-size: 50
+
+logging:
+  level:
+    com.example.kafkaoutbox: INFO

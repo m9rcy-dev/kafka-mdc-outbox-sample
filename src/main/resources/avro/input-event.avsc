@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "InputEvent",
+  "namespace": "com.example.kafkaoutbox.avro",
+  "fields": [
+    { "name": "recordId", "type": "string" },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": [ "NEW", "UPDATE" ]
+      }
+    },
+    { "name": "name", "type": "string" }
+  ]
+}
